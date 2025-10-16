@@ -22,6 +22,6 @@ b. **Environments/:** Contains all exported Postman environments ('.json' files)
 5. Select the environment from the environment dropdown.  
 6. Run the collection to see all tests executed, including passing and failing cases.
 
-**Notes**
+**Notes:**
 a. Each collection has its own environment variables. Make sure to select the correct environment before running a collection.  
 b. Dynamic data generation ensures unique test cases on every run.
