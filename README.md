@@ -11,8 +11,8 @@ This repository contains Postman collections and environments for API testing. I
 7. **API Chaining:** Response data from one request is used in subsequent requests.
 
 **File Structure:**
-a. **Collections/:** Contains all exported Postman collections ('.json' files).  
-b. **Environments/:** Contains all exported Postman environments ('.json' files).  
+1. **Collections/:** Contains all exported Postman collections ('.json' files).  
+2. **Environments/:** Contains all exported Postman environments ('.json' files).  
 
 **Instructions for Running:**
 1. Download the repository.  
@@ -23,5 +23,5 @@ b. **Environments/:** Contains all exported Postman environments ('.json' files)
 6. Run the collection to see all tests executed, including passing and failing cases.
 
 **Notes:**
-a. Each collection has its own environment variables. Make sure to select the correct environment before running a collection.  
-b. Dynamic data generation ensures unique test cases on every run.
+1. Each collection has its own environment variables. Make sure to select the correct environment before running a collection.  
+2. Dynamic data generation ensures unique test cases on every run.
