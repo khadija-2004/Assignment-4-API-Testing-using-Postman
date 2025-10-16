@@ -1,0 +1,369 @@
+{
+	"info": {
+		"_postman_id": "9becba1f-3309-4e94-8c15-26bf92eff929",
+		"name": "REST Objects API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46132362",
+		"_collection_link": "https://khadija-1448376.postman.co/workspace/6ea89d9c-836d-49ab-bbd3-8bab3244cddf/collection/46132362-9becba1f-3309-4e94-8c15-26bf92eff929?action=share&source=collection_link&creator=46132362"
+	},
+	"item": [
+		{
+			"name": "Get All Objects",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let res = pm.response.json();\r",
+							"console.log(\"Total objects received:\", res.length);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Response is an array\", () => {\r",
+							"    pm.expect(res).to.be.an(\"array\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/objects",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"objects"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get One Object",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let res = pm.response.json();\r",
+							"console.log(\"Fetched object ID:\", res.id);\r",
+							"console.log(\"Name:\", res.name);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Response has ID field\", () => {\r",
+							"    pm.expect(res.id).to.exist;\r",
+							"});\r",
+							"pm.test(\"Response has name field\", () => {\r",
+							"    pm.expect(res.name).to.exist;\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/objects/8",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"objects",
+						"8"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Object",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let res = pm.response.json();\r",
+							"\r",
+							"console.log(\"Created object ID:\", res.id);\r",
+							"console.log(\"Name:\", res.name);\r",
+							"console.log(\"Year:\", res.data.year);\r",
+							"console.log(\"Price:\", res.data.price);\r",
+							"console.log(\"CPU model:\", res.data[\"CPU model\"]);\r",
+							"console.log(\"Hard disk size:\", res.data[\"Hard disk size\"]);\r",
+							"\r",
+							"pm.environment.set(\"objectId\", res.id);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"pm.test(\"Name field exists\", function() {\r",
+							"    pm.expect(res.name).to.exist;\r",
+							"});\r",
+							"pm.test(\"Price is 1200\", function() {\r",
+							"    pm.expect(res.data.price).to.equal(1200);\r",
+							"});\r",
+							"pm.test(\"Year is 2030 (failing test)\", function() {\r",
+							"    pm.expect(res.data.year).to.equal(2030);\r",
+							"});\r",
+							"pm.test(\"CPU model field exists\", function() {\r",
+							"    pm.expect(res.data[\"CPU model\"]).to.exist;\r",
+							"});\r",
+							"pm.test(\"Hard disk size field exists\", function() {\r",
+							"    pm.expect(res.data[\"Hard disk size\"]).to.exist;\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Laptop\",\r\n  \"data\": {\r\n    \"year\": 2025,\r\n    \"price\": 1200,\r\n    \"CPU model\": \"Intel i7\",\r\n    \"Hard disk size\": \"1 TB\"\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/objects",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"objects"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Object",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let res = pm.response.json();\r",
+							"console.log(\"Updated object ID:\", res.id);\r",
+							"console.log(\"New price:\", res.data.price);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Name updated correctly\", () => {\r",
+							"    pm.expect(res.name).to.equal(\"Updated Laptop\");\r",
+							"});\r",
+							"pm.test(\"Price updated correctly\", () => {\r",
+							"    pm.expect(res.data.price).to.equal(1300);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Updated Laptop\",\r\n  \"data\": {\r\n    \"year\": 2026,\r\n    \"price\": 1300,\r\n    \"CPU model\": \"Intel i9\",\r\n    \"Hard disk size\": \"2 TB\"\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/objects/{{objectId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"objects",
+						"{{objectId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Partial Update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let res = pm.response.json();\r",
+							"console.log(\"Patched object ID:\", res.id);\r",
+							"console.log(\"Updated price:\", res.data.price);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Price updated to 1400\", () => {\r",
+							"    pm.expect(res.data.price).to.equal(1400);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"data\": {\r\n    \"price\": 1400\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/objects/{{objectId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"objects",
+						"{{objectId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove Object",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 or 204\", () => {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 204]);\r",
+							"});\r",
+							"console.log(\"Deleted object ID:\", pm.environment.get(\"objectId\"));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/objects/{{objectId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"objects",
+						"{{objectId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generate Random Request Body Data",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let randomNum = Math.floor(Math.random() * 1000);\r",
+							"let randomPrice = Math.floor(Math.random() * 2000) + 500;\r",
+							"let randomYear = Math.floor(Math.random() * 10) + 2020; // 2020-2029\r",
+							"\r",
+							"pm.variables.set(\"randomName\", \"Laptop_\" + randomNum);\r",
+							"pm.variables.set(\"randomPrice\", randomPrice);\r",
+							"pm.variables.set(\"randomYear\", randomYear);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let res = pm.response.json();\r",
+							"console.log(\"Created object ID:\", res.id);\r",
+							"console.log(\"Name:\", res.name);\r",
+							"console.log(\"Price:\", res.data.price);\r",
+							"console.log(\"Year:\", res.data.year);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Name matches random name\", () => {\r",
+							"    pm.expect(res.name).to.equal(pm.variables.get(\"randomName\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Price matches random price\", () => {\r",
+							"    pm.expect(res.data.price).to.equal(pm.variables.get(\"randomPrice\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Year matches random year\", () => {\r",
+							"    pm.expect(res.data.year).to.equal(pm.variables.get(\"randomYear\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"CPU model is AMD (failing test)\", () => {\r",
+							"    pm.expect(res.data[\"CPU model\"]).to.equal(\"AMD\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"{{randomName}}\",\r\n  \"data\": {\r\n    \"year\": {{randomYear}},\r\n    \"price\": {{randomPrice}},\r\n    \"CPU model\": \"Intel i7\",\r\n    \"Hard disk size\": \"1 TB\"\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/objects",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"objects"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

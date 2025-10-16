@@ -1,0 +1,423 @@
+{
+	"info": {
+		"_postman_id": "0686a38f-c00e-470e-a8e4-66d190068599",
+		"name": "Reqres API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46132362",
+		"_collection_link": "https://khadija-1448376.postman.co/workspace/6ea89d9c-836d-49ab-bbd3-8bab3244cddf/collection/46132362-0686a38f-c00e-470e-a8e4-66d190068599?action=share&source=collection_link&creator=46132362"
+	},
+	"item": [
+		{
+			"name": "Get All Users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"console.log(\"GET All Users response body:\", jsonData);\r",
+							"\r",
+							"pm.test(\"GET All Users status is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Response has data array\", () => {\r",
+							"    pm.expect(jsonData.data).to.be.an(\"array\");\r",
+							"});\r",
+							"\r",
+							"pm.environment.set(\"firstUserId\", jsonData.data[0].id);\r",
+							"pm.environment.set(\"firstUserName\", jsonData.data[0].first_name + \" \" + jsonData.data[0].last_name);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "reqres-free-v1",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/users?page=1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get One User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"console.log(\"GET User by ID response body:\", jsonData);\r",
+							"\r",
+							"pm.test(\"GET User by ID status is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Response contains correct user id\", () => {\r",
+							"    pm.expect(jsonData.data.id).to.eql(parseInt(pm.environment.get(\"firstUserId\")));\r",
+							"});\r",
+							"pm.test(\"Response contains correct user name\", () => {\r",
+							"    let fullName = pm.environment.get(\"firstUserName\");\r",
+							"    pm.expect(jsonData.data.first_name + \" \" + jsonData.data.last_name).to.eql(fullName);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "reqres-free-v1",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/users/{{firstUserId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"{{firstUserId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"console.log(\"POST /users response body:\", jsonData);\r",
+							"\r",
+							"pm.test(\"POST status is 201\", () => {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"pm.test(\"Response contains id\", () => {\r",
+							"    pm.expect(jsonData.id).to.exist;\r",
+							"});\r",
+							"pm.test(\"Response contains first_name and last_name correctly\", () => {\r",
+							"    pm.expect(jsonData.first_name).to.eql(\"khadija\");\r",
+							"    pm.expect(jsonData.last_name).to.eql(\"nafees\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.environment.set(\"createdUserId\", jsonData.id);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "reqres-free-v1",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"first_name\": \"khadija\",\r\n  \"last_name\": \"nafees\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData;\r",
+							"try { jsonData = pm.response.json(); } catch (e) { jsonData = {}; }\r",
+							"console.log(\"PUT /users response:\", pm.response.text());\r",
+							"\r",
+							"pm.test(\"PUT status is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains updated first_name\", () => {\r",
+							"    pm.expect(jsonData.first_name).to.eql(\"manahil\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains updated last_name\", () => {\r",
+							"    pm.expect(jsonData.last_name).to.eql(\"rizwan\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains updatedAt timestamp\", () => {\r",
+							"    pm.expect(jsonData.updatedAt).to.exist;\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "reqres-free-v1",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"first_name\": \"manahil\",\r\n  \"last_name\": \"rizwan\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/{{createdUserId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"{{createdUserId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Partial Update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();\r",
+							"console.log(\"PATCH /users response body:\", jsonData);\r",
+							"\r",
+							"pm.test(\"PATCH status is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Response contains updated last_name\", () => {\r",
+							"    pm.expect(jsonData.last_name).to.eql(\"malik\");\r",
+							"});\r",
+							"pm.test(\"Response contains updatedAt timestamp\", () => {\r",
+							"    pm.expect(jsonData.updatedAt).to.exist;\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "reqres-free-v1",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"last_name\": \"malik\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/{{createdUserId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"{{createdUserId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", () => {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"\r",
+							"pm.environment.unset(\"createdUserId\");\r",
+							"console.log(\"Deleted user with ID:\", pm.environment.get(\"createdUserId\"));"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "reqres-free-v1",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/users/{{createdUserId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"{{createdUserId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generate Random Request Body Data",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let randomNum = Math.floor(Math.random() * 10000);\r",
+							"let randomEmail = `user${randomNum}@example.com`;\r",
+							"let randomFirstName = `FirstName${randomNum}`;\r",
+							"\r",
+							"pm.environment.set(\"randId\", randomNum);\r",
+							"pm.environment.set(\"randEmail\", randomEmail);\r",
+							"pm.environment.set(\"randFirstName\", randomFirstName);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let res = pm.response.json();\r",
+							"console.log(\"Created object ID:\", res.id);\r",
+							"console.log(\"ID:\", res.id);\r",
+							"console.log(\"Email:\", res.email);\r",
+							"console.log(\"First Name:\", res.first_name);\r",
+							"console.log(\"Last Name:\", res.last_name);\r",
+							"\r",
+							"pm.test(\"Status code is 201\", () => {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([201]);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"ID matches random ID\", () => {\r",
+							"    pm.expect(Number(res.id)).to.equal(Number(pm.environment.get(\"randId\")));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Email matches random email\", () => {\r",
+							"    pm.expect(res.email).to.equal(pm.environment.get(\"randEmail\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"First Name matches random first name\", () => {\r",
+							"    pm.expect(res.first_name).to.equal(pm.environment.get(\"randFirstName\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Last Name is Ahmed (failing test)\", () => {\r",
+							"    pm.expect(res.last_name).to.equal(\"Ahmed\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "reqres-free-v1",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": \"{{randId}}\",\r\n  \"email\": \"{{randEmail}}\",\r\n  \"first_name\": \"{{randFirstName}}\",\r\n  \"last_name\": \"khan\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

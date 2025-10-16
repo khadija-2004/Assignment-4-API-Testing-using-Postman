@@ -1,0 +1,175 @@
+{
+	"info": {
+		"_postman_id": "5ef9eb8d-8f55-478c-9871-689ff635259c",
+		"name": "REST Countries API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46132362",
+		"_collection_link": "https://khadija-1448376.postman.co/workspace/6ea89d9c-836d-49ab-bbd3-8bab3244cddf/collection/46132362-5ef9eb8d-8f55-478c-9871-689ff635259c?action=share&source=collection_link&creator=46132362"
+	},
+	"item": [
+		{
+			"name": "Get All Countries",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let res = pm.response.json();\r",
+							"console.log(\"Number of countries:\", res.length);\r",
+							"console.log(\"First country:\", res[0]);\r",
+							"\r",
+							"pm.environment.set(\"firstCountryName\", res[0].name.common);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is an array\", () => {\r",
+							"    pm.expect(res).to.be.an(\"array\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"First country name is Mars (failing test)\", () => {\r",
+							"    pm.expect(res[0].name.common).to.equal(\"Mars\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Capital exists for first country\", () => {\r",
+							"    pm.expect(res[0].capital).to.exist;\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/all?fields=name,capital,population,region",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"all"
+					],
+					"query": [
+						{
+							"key": "fields",
+							"value": "name,capital,population,region"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Country by Name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let res = pm.response.json();\r",
+							"console.log(\"Country details:\", res[0]);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Country name matches variable\", () => {\r",
+							"    pm.expect(res[0].name.common).to.equal(pm.environment.get(\"firstCountryName\"));\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/name/{{firstCountryName}}?fields=name,capital,population,region",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"name",
+						"{{firstCountryName}}"
+					],
+					"query": [
+						{
+							"key": "fields",
+							"value": "name,capital,population,region"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Country",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let res;\r",
+							"try {\r",
+							"    res = pm.response.json();\r",
+							"} catch (e) {\r",
+							"    res = {};\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Name field exists and matches\", () => {\r",
+							"    pm.expect(res.name).to.exist;\r",
+							"    pm.expect(res.name).to.equal(\"Wakanda\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Capital field exists and matches\", () => {\r",
+							"    pm.expect(res.capital).to.exist;\r",
+							"    pm.expect(res.capital).to.equal(\"Wakanda City\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Wakanda\",\r\n  \"capital\": \"Wakanda City\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/name/{{firstCountryName}}?fields=name,capital,population,region",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"name",
+						"{{firstCountryName}}"
+					],
+					"query": [
+						{
+							"key": "fields",
+							"value": "name,capital,population,region"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
